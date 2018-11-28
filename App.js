@@ -21,6 +21,7 @@ export default class App extends React.Component {
     super();
     this.state = {
       cameraOn: false,
+      loading: false,
       food: [
         // {
         //   name: 'Apple',
@@ -28,6 +29,7 @@ export default class App extends React.Component {
         //     'https://bcpuppets.ca/wp-content/uploads/2018/09/apple-worm-100x100.jpg',
         //   pantryExpiration: '2-4 weeks',
         //   refrigarator: '1-2 months',
+        //   id: 0
         // },
         // {
         //   name: 'Orange',
@@ -35,6 +37,7 @@ export default class App extends React.Component {
         //     'http://www.laceupforchange.org.za/wp-content/uploads/2017/02/fruit-orange.jpg',
         //   pantryExpiration: '2-4 weeks',
         //   refrigarator: '1-2 months',
+        //   id: 1
         // },
       ],
     };
@@ -48,39 +51,74 @@ export default class App extends React.Component {
 
   pushItem = newItem => {
     this.setState({
-      food: [...this.state.food, newItem],
+      food: [...this.state.food, { ...newItem, id: this.state.food.length }],
     });
+    this.setLoading(false);
     console.log(newItem);
-    console.log(this.state.food);
+  };
+
+  popItem = i => {
+    let newFood = this.state.food.filter(item => item.id !== i);
+    this.setState({
+      food: newFood,
+    });
+  };
+
+  setLoading = s => {
+    this.setState({
+      loading: s,
+    });
+    if (!s) this.setState({ cameraOn: false });
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        {this.state.loading ? (
           <Image
+            source={require('./assets/icons/loading-icon.gif')}
             style={{
-              flex: 1,
-              marginTop: 20,
+              marginTop: 50,
+              maxHeight: 150,
+              flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               alignContent: 'center',
               alignSelf: 'center',
-              height: 100,
-              width: 100,
             }}
-            source={require('./assets/icons/app-icon.png')}
           />
-          {this.state.food.length ? (
-            this.state.food.map((item, i) => <FoodItem item={item} key={i} />)
-          ) : (
-            <View style={styles.container}>
-              <Card style={styles.empty}>
-                <Text style={styles.emptyText}>Your pantry is empty</Text>
-              </Card>
-            </View>
-          )}
-        </ScrollView>
+        ) : (
+          <ScrollView>
+            <Image
+              style={{
+                flex: 1,
+                marginTop: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignContent: 'center',
+                alignSelf: 'center',
+                height: 100,
+                width: 100,
+              }}
+              source={require('./assets/icons/app-icon.png')}
+            />
+            {this.state.food.length ? (
+              this.state.food.map((item, i) => (
+                <FoodItem
+                  item={item}
+                  key={i}
+                  popItem={this.popItem.bind(this)}
+                />
+              ))
+            ) : (
+              <View style={styles.container}>
+                <Card style={styles.empty}>
+                  <Text style={styles.emptyText}>Your pantry is empty</Text>
+                </Card>
+              </View>
+            )}
+          </ScrollView>
+        )}
         <View
           style={
             this.state.cameraOn
@@ -92,10 +130,14 @@ export default class App extends React.Component {
             <Cam
               pushItem={this.pushItem.bind(this)}
               toggle={this.toggleCam.bind(this)}
+              setLoading={this.setLoading.bind(this)}
               style={{ flex: 3 }}
             />
           ) : (
-            <CamButton toggle={this.toggleCam.bind(this)} />
+            <CamButton
+              setLoading={this.toggleCam.bind(this)}
+              toggle={this.toggleCam.bind(this)}
+            />
           )}
         </View>
       </View>
@@ -112,7 +154,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   empty: {
-    marginTop: Dimensions.get('window').height/4,
+    marginTop: Dimensions.get('window').height / 4,
     paddingTop: 10,
     paddingBottom: 10,
   },

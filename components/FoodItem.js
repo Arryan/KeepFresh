@@ -1,9 +1,13 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { TouchableOpacity, Text, View, StyleSheet, Image } from 'react-native';
 import { Card } from 'react-native-paper';
 import { Constants } from 'expo';
 
 export default class FoodItem extends React.Component {
+  handleTouch = e => {
+      this.props.popItem(this.props.item.id)
+  };
+
   render() {
     const {
       imgSrc,
@@ -13,14 +17,27 @@ export default class FoodItem extends React.Component {
       refrigarator,
     } = this.props.item;
     return (
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={this.handleTouch}>
         <Card style={styles.container}>
           <View style={styles.container}>
             <View style={{ paddingLeft: 50 }}>
               <Text style={{ fontWeight: 'bold' }}>{name}</Text>
-              <Text>{(pantryExpiration && pantryExpiration != '--') ? "Pantry:" + pantryExpiration : ' '}</Text>
-              <Text>{(refrigarator && refrigarator != '--') ? "Refrig:" + refrigarator : ' '}</Text>
-              <Text>{((!pantryExpiration || pantryExpiration == '--') && (!refrigarator || refrigarator == '--')) ? "Expiration not found" : ' '}</Text>
+              <Text>
+                {pantryExpiration && pantryExpiration != '--'
+                  ? 'Pantry:' + pantryExpiration
+                  : ' '}
+              </Text>
+              <Text>
+                {refrigarator && refrigarator != '--'
+                  ? 'Refrig:' + refrigarator
+                  : ' '}
+              </Text>
+              <Text>
+                {(!pantryExpiration || pantryExpiration == '--') &&
+                (!refrigarator || refrigarator == '--')
+                  ? 'Expiration not found'
+                  : ' '}
+              </Text>
             </View>
             <Image
               source={{ uri: url }}
@@ -36,7 +53,7 @@ export default class FoodItem extends React.Component {
             />
           </View>
         </Card>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

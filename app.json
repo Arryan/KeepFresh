@@ -1,17 +1,17 @@
 {
   "expo": {
-    "name": "upbeat-kiwi",
+    "name": "Keep Fresh",
     "description": "No description",
-    "slug": "snack-SJJngkv0X",
+    "slug": "keep-fresh-hw5",
     "privacy": "unlisted",
     "sdkVersion": "31.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
-    "icon": "https://d1wp6m56sqw74a.cloudfront.net/~assets/c9aa1be8a6a6fe81e20c3ac4106a2ebc",
+    "icon": "./assets/icons/app-icon.png",
     "loading": {
-      "icon": "https://d1wp6m56sqw74a.cloudfront.net/~assets/c9aa1be8a6a6fe81e20c3ac4106a2ebc",
-      "hideExponentText": false
+      "icon": "./assets/icons/app-icon.png",
+      "hideExponentText": true
     },
     "packagerOpts": {
       "assetExts": [
@@ -23,6 +23,9 @@
     },
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.hw5.keepfresh"
     }
   }
 }

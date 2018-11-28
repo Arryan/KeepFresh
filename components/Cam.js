@@ -23,23 +23,31 @@ export default class Cam extends React.Component {
 
   snap = async () => {
     if (this.camera) {
-      const photo = await this.camera.takePictureAsync({ base64: true, ratio: '1:1' });
+      this.props.setLoading(true);
+      const photo = await this.camera.takePictureAsync({
+        base64: true,
+        ratio: '1:1',
+      });
       const { uri, base64 } = photo;
       recognizer(base64)
-        .then(async (n) => {
+        .then(async n => {
           try {
-          let response = await fetch('https://ejohnston.lib.id/eatsafe@dev/?food=' + n);
-          let responseJson = await response.json();
-          this.props.pushItem({
-            name: n,
-            url: uri,
-            pantryExpiration: responseJson['Pantry'],
-            refrigarator: responseJson['Refrigerator'],
-        });
-      } catch(err) {
-        console.error(err);
-      }       
-      })
+            let response = await fetch(
+              'https://ejohnston.lib.id/eatsafe@dev/?food=' + n
+            );
+            let responseJson = await response.json();
+            this.props.pushItem({
+              name: n,
+              url: uri,
+              pantryExpiration: responseJson['Pantry'],
+              refrigarator: responseJson['Refrigerator'],
+            });
+            this.props.setLoading(false)
+
+          } catch (err) {
+            console.error(err);
+          }
+        })
         .catch(e => console.warn(e));
     }
   };
